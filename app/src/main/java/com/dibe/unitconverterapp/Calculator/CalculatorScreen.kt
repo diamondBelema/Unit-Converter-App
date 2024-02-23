@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.automirrored.outlined.Backspace
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -210,7 +211,7 @@ fun ColumnScope.NormalScreen(viewModel : CalculatorViewModel) {
                     contentAlignment = Alignment.Center
                    ) {
                     Icon(
-                        Icons.AutoMirrored.Outlined.Backspace ,
+                        Icons.AutoMirrored.Default.Backspace,
                         contentDescription = "DEL" ,
                         tint = MaterialTheme.colorScheme.secondary
                         )
