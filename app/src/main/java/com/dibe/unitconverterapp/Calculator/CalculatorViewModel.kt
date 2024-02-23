@@ -1,131 +1,223 @@
 package com.dibe.unitconverterapp.Calculator
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+
 
 class CalculatorViewModel: ViewModel() {
     private val state = CalculatorState()
 
-    val reviewText = state.reviewText
-    val size = state.fontSize
+    val displayText = state.displayText
+    val displayTextFontSize = state.displayTextFontSize
+    val ansTextFontSize = state.ansTextFontSize
+    val isNormalCalculator = state.isNormalCalculator
+    var ansText = state.ansText
 
     private val sign: List<String> = listOf("+" , "÷" , "-" , "×")
+    private var calculations: MutableMap<String, Double> = mutableMapOf()
+    private var latest: String? = null
+    private var current = "+1"
+    private var isOperation  = false
+    private var isDecimal = false
+    private var decimalCount = 0
+    private var noOfSigns = mutableMapOf(
+        sign[0] to 1,
+        sign[1] to 0,
+        sign[2] to 0,
+        sign[3] to 0
+                                        )
 
-    private fun updateFontSize() {
-        if ((state.firstNumber.value + state.firstNumberDecimal.value).toString().length > 13) {
-            state.fontSize.intValue = 50
-        } else if ((state.firstNumber.value + state.firstNumberDecimal.value).toString().length > 11) {
-            state.fontSize.intValue = 60
-        }else if ((state.firstNumber.value + state.firstNumberDecimal.value).toString().length < 12) {
-            state.fontSize.intValue = 70
+    fun changeScreen(){
+        state.isNormalCalculator.value = !state.isNormalCalculator.value
+    }
+
+    private fun updateDisplayTextFontSize() {
+        if (state.displayText.value.length > 13) {
+            state.displayTextFontSize.intValue = 40
+        } else if (state.displayText.value.length > 9) {
+            state.displayTextFontSize.intValue = 50
+        } else if (state.displayText.value.length > 7) {
+            state.displayTextFontSize.intValue = 60
+        }else if (state.displayText.value.length < 8) {
+            state.displayTextFontSize.intValue = 70
         }
     }
 
-    private fun calc() {
-        val timesShortcut: Double = if (state.firstNumberDecimal.value != 0.0 && state.secondNumberDecimal.value != 0.0) {
-            (state.firstNumber.value + state.firstNumberDecimal.value) * (state.secondNumber.value + state.secondNumberDecimal.value)
-        }else {
-            (state.firstNumber.value * state.secondNumber.value).toDouble()
+    private fun updateAnsTextFontSize() {
+        if (state.ansText.value.length > 15) {
+            state.ansTextFontSize.intValue = 23
+        } else if (state.ansText.value.length > 11 && state.ansText.value.isNotEmpty()) {
+            state.ansTextFontSize.intValue = 30
+        } else if (state.ansText.value.isEmpty() || state.ansText.value == "0.0") {
+            state.ansTextFontSize.intValue = 0
+        } else if (state.ansText.value.length < 11 && state.ansText.value.isNotEmpty()) {
+            state.ansTextFontSize.intValue = 32
         }
-
-        val divideShortcut: Double = if (state.firstNumberDecimal.value != 0.0 && state.secondNumberDecimal.value != 0.0) {
-            (state.firstNumber.value + state.firstNumberDecimal.value) / (state.secondNumber.value + state.secondNumberDecimal.value)
-        }else {
-            (state.firstNumber.value / state.secondNumber.value).toDouble()
-        }
-
-        when (state.operator.value) {
-            "+" -> state.firstNumber.value += state.secondNumber.value
-            "÷" -> state.firstNumber.value = divideShortcut.toString().slice(0 until divideShortcut.toString().indexOf('.')).toLong()
-            "-" -> state.firstNumber.value -= state.secondNumber.value
-            "×" -> state.firstNumber.value  = timesShortcut.toString().slice(0 until timesShortcut.toString().indexOf('.')).toLong()
-        }
-        when (state.operator.value) {
-            "+" -> state.firstNumberDecimal.value += state.secondNumberDecimal.value
-            "÷" -> state.firstNumberDecimal.value = "0${divideShortcut.toString().slice(divideShortcut.toString().indexOf('.') until timesShortcut.toString().length)}".toDouble()
-            "-" -> state.firstNumberDecimal.value -= state.secondNumberDecimal.value
-            "×" -> state.firstNumberDecimal.value = "0${timesShortcut.toString().slice(timesShortcut.toString().indexOf('.') until timesShortcut.toString().length)}".toDouble()
-        }
-
     }
 
-    fun updateReviewText(arg: String) {
-        if ((state.firstNumber.value + state.firstNumberDecimal.value).toString().length < 21) {
-            if (state.isOperation.value) {
-                if (! state.isDecimal.value) state.secondNumber.value =
-                    "${state.secondNumber.value}$arg".toLong()
-                else if (state.isDecimal.value) {
-                    if (state.decimalCount.value != 0) state.secondNumberDecimal.value =
-                        "${state.secondNumberDecimal.value}$arg".toDouble()
-                    else state.secondNumberDecimal.value = "0.$arg".toDouble()
-                    state.decimalCount.value ++
-                }
-            } else if (! state.isOperation.value) {
-                if (! state.isDecimal.value) state.firstNumber.value =
-                    "${state.firstNumber.value}$arg".toLong()
-                else if (state.isDecimal.value) {
-                    if (state.decimalCount.value != 0) state.firstNumberDecimal.value =
-                        "${state.firstNumberDecimal.value}$arg".toDouble()
-                    else state.firstNumberDecimal.value = "0.$arg".toDouble()
-                    state.decimalCount.value ++
+    private fun calculate(): String {
+        var ans = 0.0
+
+        calculations.forEach { (sign, num) ->
+            when {
+                sign[0] == '+' -> ans += num
+                sign[0] == '÷' -> ans /= num
+                sign[0] == '-' -> ans -= num
+                sign[0] == '×' -> ans *= num
+            }
+        }
+
+        return ans.toString()
+    }
+
+    fun updateDisplayText(arg: String) {
+        if (calculations.isEmpty() || state.displayText.value == "0"){
+            state.displayText.value = ""
+            calculations["+1"] = arg.toDouble()
+        }else {
+            if (!isDecimal){
+                    calculations[current] = "${calculations[current]?.toInt()}$arg".toDouble()
+            }else {
+                if (decimalCount == 0) {
+                    calculations[current] = "${calculations[current]?.toInt()}.$arg".toDouble()
+                    decimalCount += 1
+                }else {
+                    calculations[current] = "${calculations[current]}$arg".toDouble()
+                    decimalCount += 1
                 }
             }
-            state.reviewText.value = "${state.reviewText.value}$arg"
-            updateFontSize()
         }
+        Log.i("myTag", calculations.toString())
+        state.displayText.value = "${state.displayText.value}$arg"
+        isOperation = false
+        state.ansText.value = calculate()
+        updateDisplayTextFontSize()
+        updateAnsTextFontSize()
     }
 
-    fun addOperator(arg: String) {
-        if ((state.firstNumber.value + state.firstNumberDecimal.value).toString().length < 20) {
-            if (!sign.contains(state.reviewText.value.last().toString()) && (state.firstNumber.value.toString() != "0" || state.firstNumberDecimal.value.toString() != "0.0")
-            ) {
-                calc()
-                state.operator.value = arg
-                state.isOperation.value = true
-                state.reviewText.value = "${state.reviewText.value}$arg"
-                state.isDecimal.value = false
-                state.decimalCount.value = 0
-                state.secondNumber.value = 0
-                state.secondNumberDecimal.value = 0.0
+    fun addOperator(operator: String) {
+        if (state.displayText.value.isNotEmpty() && ! isOperation){
+            when (operator) {
+                "+" -> {
+                    noOfSigns["+"] = "${noOfSigns["+"]?.plus(1)}".toInt()
+                    current = "$operator${noOfSigns["+"]}"
+                    calculations[current] = 0.0
+                    Log.i("myTag", "you just clicked +")
+                }
+
+                "-" -> {
+                    noOfSigns["-"] = "${noOfSigns["-"]?.plus(1)}".toInt()
+                    current = "$operator${noOfSigns["-"]}"
+                    calculations[current] = 0.0
+                    Log.i("myTag", "you just clicked -")
+                }
+
+                "×" -> {
+                    noOfSigns["×"] = "${noOfSigns["×"]?.plus(1)}".toInt()
+                    current = "$operator${noOfSigns["×"]}"
+                    calculations[current] = 0.0
+                    Log.i("myTag", "you just clicked ×")
+                }
+
+                "÷" -> {
+                    noOfSigns["÷"] = "${noOfSigns["÷"]?.plus(1)}".toInt()
+                    current = "$operator${noOfSigns["÷"]}"
+                    calculations[current] = 0.0
+                    Log.i("myTag", "you just clicked ÷")
+                }
+                "%" -> {
+                    Log.i("myTag", "you just clicked ÷")
+                    calculations[current] = "${calculations[current]?.times(100)}".toDouble()
+                    state.displayText.value = "${state.displayText.value}00"
+                }
             }
-            updateFontSize()
+            if (operator != "%") {
+                state.displayText.value = "${state.displayText.value}$operator"
+                isOperation = true
+            }
+            isDecimal = false
+            decimalCount = 0
+            updateDisplayTextFontSize()
         }
     }
 
     fun displayAns() {
-        calc()
-        if (state.firstNumberDecimal.value == 0.0) state.reviewText.value = "${state.firstNumber.value}"
-        else if (state.firstNumberDecimal.value != 0.0) state.reviewText.value = "${state.firstNumber.value + state.firstNumberDecimal.value}"
-        updateFontSize()
-
-        state.operator.value = " "
-        state.secondNumber.value = 0
-        state.secondNumberDecimal.value = 0.0
-        state.isOperation.value = false
+        if (calculate().endsWith(".0")) {
+            state.displayText.value = calculate().dropLast(2)
+            isDecimal = false
+            decimalCount = 0
+        }else {
+            state.displayText.value = calculate()
+            isDecimal = true
+            decimalCount = 1
+        }
+        calculations = mutableMapOf("+1" to calculate().toDouble())
+        noOfSigns = mutableMapOf(
+            sign[0] to 1,
+            sign[1] to 0,
+            sign[2] to 0,
+            sign[3] to 0
+                                )
+        current = "+1"
+        isOperation = false
+        state.ansText.value = ""
+        updateAnsTextFontSize()
+        updateDisplayTextFontSize()
     }
 
     fun clear() {
-        state.reviewText.value = " "
-        state.secondNumber.value = 0
-        state.firstNumber.value = 0
-        state.firstNumberDecimal.value = 0.0
-        state.secondNumberDecimal.value = 0.0
-        state.isOperation.value = false
-        state.operator.value = ""
-        state.decimalCount.value = 0
-        state.isDecimal.value = false
-        updateFontSize()
+        state.displayText.value = ""
+        state.ansText.value = ""
+        calculations.clear()
+        noOfSigns = mutableMapOf(
+            sign[0] to 1,
+            sign[1] to 0,
+            sign[2] to 0,
+            sign[3] to 0
+                                )
+        current = "+1"
+        isDecimal = false
+        isOperation = false
+        decimalCount = 0
+        ansText.value = calculate()
+        updateDisplayTextFontSize()
+        updateAnsTextFontSize()
     }
 
     fun putPoint() {
-        if ((state.firstNumber.value + state.firstNumberDecimal.value).toString().length < 21) {
-            state.isDecimal.value = true
-            state.reviewText.value = "${state.reviewText.value}."
-            updateFontSize()
+        if (calculations.isNotEmpty() && ! isOperation && ! isDecimal && state.displayText.value.isNotEmpty()){
+            isDecimal = true
+            state.displayText.value = "${state.displayText.value}."
+            updateDisplayTextFontSize()
         }
     }
 
     fun delete(){
-
+        if (state.displayText.value.isNotEmpty()){
+            if (sign.contains(state.displayText.value.last().toString())){
+                state.displayText.value = state.displayText.value.dropLast(1)
+                calculations.remove(current)
+                current = calculations.keys.last()
+            }else{
+                if (calculations[current].toString().endsWith(".0")) {
+                    Log.i("myTag", "deleting .0")
+                    if (calculations[current].toString().dropLast(3) == "") calculations[current] = 0.0
+                    else if (state.displayText.value.last() == '.') {
+                        decimalCount = 0
+                        isDecimal = false
+                    }
+                    else calculations[current] = calculations[current].toString().dropLast(3).toDouble()
+                    state.displayText.value = state.displayText.value.dropLast(1)
+                }else {
+                    Log.i("myTag", "deleting")
+                    calculations[current] = calculations[current].toString().dropLast(1).toDouble()
+                    state.displayText.value = state.displayText.value.dropLast(1)
+                }
+            }
+        }
+        state.ansText.value = calculate()
+        Log.i("myTag", calculations.toString())
+        updateAnsTextFontSize()
+        updateDisplayTextFontSize()
     }
-
 }
