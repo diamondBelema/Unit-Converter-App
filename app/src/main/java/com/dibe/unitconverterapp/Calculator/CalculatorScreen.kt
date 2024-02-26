@@ -19,7 +19,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.automirrored.outlined.Backspace
+import androidx.compose.material.icons.filled.Science
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,11 +36,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.dibe.unitconverterapp.Calculator.CalculatorViewModel
 
 @Composable
@@ -46,15 +50,13 @@ fun ColumnScope.CalcButton(
         symbol : String ,
         color : Color ,
         textColor : Color = Color(0xFF000000) ,
-        width : Dp = 160.dp ,
-        height : Dp = 80.dp ,
         weight : Float = 1f,
         calc : () -> Unit ,
+        fontSize : TextUnit = 20.sp
                           ) {
     Box(
         modifier = Modifier
-            .width(width)
-            .height(height)
+            .fillMaxSize()
             .weight(weight)
             .clickable { calc() }
             .padding(10.dp)
@@ -63,21 +65,38 @@ fun ColumnScope.CalcButton(
             .padding(10.dp) ,
         contentAlignment = Alignment.Center
        ) {
-        Text(text = symbol , color = textColor , fontSize = 30.sp)
+        Text(text = symbol , color = textColor , fontSize = fontSize)
+    }
+}
+
+@Composable
+fun ColumnScope.OutlinedCalcButton(
+        symbol : String ,
+        calc : (String) -> Unit ,
+        fontSize : TextUnit = 30.sp
+                                  ) {
+    ElevatedButton(onClick = { calc(symbol) },
+                   modifier = Modifier
+                       .weight(1f)
+                       .padding(8.dp)
+                       .fillMaxSize()
+                  ) {
+        Text(text = symbol , fontSize = fontSize)
     }
 }
 
 @Composable
 fun ReviewText(
         text : String ,
-        fontSize : TextUnit = 20.sp ,
+        fontSize : TextUnit
               ) {
     Text(
         text = text ,
         fontSize = fontSize ,
         color = MaterialTheme.colorScheme.onTertiaryContainer ,
         fontWeight = FontWeight.Light ,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
         )
 }
 
@@ -104,20 +123,14 @@ fun ColumnScope.NormalScreen(viewModel : CalculatorViewModel) {
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
                     calc = { viewModel.clear() })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "7" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("7") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "4" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("4") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "1" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("1") })
                 CalcButton(
                     symbol = "%" ,
@@ -136,25 +149,17 @@ fun ColumnScope.NormalScreen(viewModel : CalculatorViewModel) {
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
                     calc = { viewModel.addOperator("÷") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "8" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("8") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "5" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("5") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "2" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("2") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "0" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("0") })
             }
 
@@ -169,25 +174,17 @@ fun ColumnScope.NormalScreen(viewModel : CalculatorViewModel) {
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
                     calc = { viewModel.addOperator("×") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "9" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("9") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "6" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("6") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "3" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.updateDisplayText("3") })
-                CalcButton(
+                OutlinedCalcButton(
                     symbol = "." ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.putPoint() })
             }
 
@@ -238,7 +235,7 @@ fun ColumnScope.NormalScreen(viewModel : CalculatorViewModel) {
 }
 
 @Composable
-fun ColumnScope.`Sci-fiScreen`(viewModel : CalculatorViewModel) {
+fun ColumnScope.ScientificScreen(viewModel : CalculatorViewModel) {
     Surface(
         modifier = Modifier
             .weight(0.7f) ,
@@ -260,25 +257,27 @@ fun ColumnScope.`Sci-fiScreen`(viewModel : CalculatorViewModel) {
                     textColor = MaterialTheme.colorScheme.secondary ,
                     calc = { viewModel.clear() })
                 CalcButton(
-                    symbol = "7" ,
+                    symbol = viewModel.sinString.value ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("7") })
+                    calc = { if (viewModel.sinString.value == "sin") viewModel.`addSci-fi`("s")
+                        else viewModel.`addSci-fi`("u")
+                    })
                 CalcButton(
-                    symbol = "4" ,
+                    symbol = viewModel.lnString.value ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("4") })
+                    calc = { viewModel.`addSci-fi`("l") })
                 CalcButton(
-                    symbol = "1" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("1") })
-                CalcButton(
-                    symbol = "%" ,
+                    symbol = "(" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
                     calc = { viewModel.addOperator("%") })
+                CalcButton(
+                    symbol = "\uD835\uDED1" ,
+                    color = MaterialTheme.colorScheme.secondaryContainer ,
+                    textColor = MaterialTheme.colorScheme.secondary ,
+                    calc = { viewModel.`addSci-fi`("p") })
             }
             Column(
                 modifier = Modifier
@@ -287,30 +286,31 @@ fun ColumnScope.`Sci-fiScreen`(viewModel : CalculatorViewModel) {
                 verticalArrangement = Arrangement.SpaceEvenly ,
                   ) {
                 CalcButton(
-                    symbol = "÷" ,
+                    symbol = viewModel.angleString.value ,
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("÷") })
+                    calc = { viewModel.changeAngle() })
                 CalcButton(
-                    symbol = "8" ,
+                    symbol = viewModel.cosString.value ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("8") })
+                    calc = { if (viewModel.cosString.value == "cos") viewModel.`addSci-fi`("c")
+                    else viewModel.`addSci-fi`("v") })
                 CalcButton(
-                    symbol = "5" ,
+                    symbol = viewModel.logString.value ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("5") })
+                    calc = { viewModel.`addSci-fi`("L") })
                 CalcButton(
-                    symbol = "2" ,
+                    symbol = ")" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("2") })
+                    calc = { viewModel.addOperator("%") })
                 CalcButton(
-                    symbol = "0" ,
+                    symbol = "e" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("0") })
+                    calc = { viewModel.addOperator("2") })
             }
 
             Column(
@@ -320,30 +320,31 @@ fun ColumnScope.`Sci-fiScreen`(viewModel : CalculatorViewModel) {
                 verticalArrangement = Arrangement.SpaceEvenly ,
                   ) {
                 CalcButton(
-                    symbol = "×" ,
+                    symbol = "inv" ,
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("×") })
+                    calc = { viewModel.inv() })
                 CalcButton(
-                    symbol = "9" ,
+                    symbol = viewModel.tanString.value,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("9") })
+                    calc = { if (viewModel.tanString.value == "tan") viewModel.`addSci-fi`("t")
+                    else viewModel.`addSci-fi`("w") })
                 CalcButton(
-                    symbol = "6" ,
+                    symbol = "√" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("6") })
+                    calc = { viewModel.`addSci-fi`("√") })
                 CalcButton(
-                    symbol = "3" ,
+                    symbol = "xʸ" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.updateDisplayText("3") })
+                    calc = { viewModel.`addSci-fi`("r") })
                 CalcButton(
-                    symbol = "." ,
+                    symbol = "x!" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.putPoint() })
+                    calc = { viewModel.`addSci-fi`("!") })
             }
 
             Column(
@@ -366,21 +367,22 @@ fun ColumnScope.`Sci-fiScreen`(viewModel : CalculatorViewModel) {
                     contentAlignment = Alignment.Center
                    ) {
                     Icon(
-                        Icons.AutoMirrored.Outlined.Backspace ,
+                        Icons.AutoMirrored.Default.Backspace ,
                         contentDescription = "DEL" ,
                         tint = MaterialTheme.colorScheme.secondary
                         )
                 }
                 CalcButton(
-                    symbol = "-" ,
+                    symbol = viewModel.angleString.value ,
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("-") })
+                    calc = { viewModel.changeAngle() })
                 CalcButton(
-                    symbol = "+" ,
+                    symbol = "x⁻¹" ,
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("+") })
+                    calc = { viewModel.addOperator("x⁻¹") })
+
                 CalcButton(
                     symbol = "=" ,
                     color = MaterialTheme.colorScheme.primaryContainer ,
@@ -407,10 +409,9 @@ fun CalculatorScreen(viewModel : CalculatorViewModel , navController : NavContro
                                 contentDescription = null
                                 )
                         }
-                    }
+                    },
                          )
-            }
-                ) { paddingValues ->
+            }) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -463,13 +464,33 @@ fun CalculatorScreen(viewModel : CalculatorViewModel , navController : NavContro
                         }
                     }
                 }
+                Column (
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .weight(0.05f)
+                        .fillMaxSize()
+                       ){
+                    IconButton(onClick = { viewModel.changeScreen() }) {
+                        Icon(
+                            imageVector = Icons.Filled.Science,
+                            contentDescription = "Localized description"
+                            )
+                    }
+                }
                 if (viewModel.isNormalCalculator.value) {
                     NormalScreen(viewModel = viewModel)
                 } else {
-                    `Sci-fiScreen`(viewModel = viewModel)
+                    ScientificScreen(viewModel = viewModel)
                 }
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CalculatorPreview() {
+    val navController = rememberNavController()
+    CalculatorScreen(viewModel = CalculatorViewModel() , navController = navController)
 }
 

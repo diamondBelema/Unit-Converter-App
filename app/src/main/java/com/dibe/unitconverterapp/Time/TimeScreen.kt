@@ -5,6 +5,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.outlined.Backspace
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -40,7 +42,7 @@ import androidx.navigation.NavHostController
 
 @Composable
 private fun NumberButton(number : String , onClick : (String) -> Unit) {
-    TextButton(onClick = { onClick(number) }) {
+    ElevatedButton(onClick = { onClick(number) }) {
         Text(text = number , fontSize = 40.sp)
     }
 }
@@ -63,7 +65,7 @@ fun TimeScreen(viewModel : TimeViewModel , navController : NavHostController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "Energy" , fontSize = 20.sp) } ,
+                    title = { Text(text = "Time" , fontSize = 20.sp) } ,
                     navigationIcon = {
                         IconButton(onClick = { navController.navigate("HomeScreen") }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBackIos , contentDescription = null)
@@ -215,18 +217,19 @@ fun TimeScreen(viewModel : TimeViewModel , navController : NavHostController) {
             sheetState = sheetState ,
             onDismissRequest = { viewModel.isSheetOpen.value = false } ,
             modifier = Modifier
-                .height(TimeVariables.units.size * 58.dp)
+                .height(TimeVariables.units.size * 40.dp)
                         ) {
-            TimeVariables.units.forEach { (shortcut , unit) ->
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState()),
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.SpaceEvenly
-                      ){ChangeUnitButton(
-                    shortcut = shortcut ,
-                    unit = unit ,
-                    onClick = { viewModel.changeUnit(shortcut) })
+                  ){
+                TimeVariables.units.forEach { (shortcut , unit) ->
+                    ChangeUnitButton(
+                        shortcut = shortcut ,
+                        unit = unit ,
+                        onClick = { viewModel.changeUnit(shortcut) })
                 }
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }

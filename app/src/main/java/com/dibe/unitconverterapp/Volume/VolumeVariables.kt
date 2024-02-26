@@ -34,8 +34,8 @@ object VolumeVariables {
         "cl" to 100.0,
         "hl" to 0.01,
         "dal" to 0.1,
-        "in³" to 61.0237441,
-        "ft³" to 0.03531467,
-        "gal" to 0.21996915,
+        "in³" to 1/0.01638706,
+        "ft³" to 1/28.3168466,
+        "gal" to 1/4.546092,
     )
 }

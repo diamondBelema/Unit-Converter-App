@@ -17,10 +17,10 @@ class TimeViewModel : ViewModel() {
 
     private fun updateTextTwo() {
         val medium = state.textOne.value.toDoubleOrNull()
-            ?.times(TimeVariables.conversionFactorsToKM[state.unitOne.value] !!)
+            ?.times(TimeVariables.conversionFactorsToSeconds[state.unitOne.value] !!)
         if (medium != null) {
             state.textTwo.value =
-                (medium * TimeVariables.conversionFactorsFromKM[state.unitTwo.value] !!).toString()
+                (medium * TimeVariables.conversionFactorsFromSeconds[state.unitTwo.value] !!).toString()
             if (!isDecimal) {
                 if (state.textTwo.value.endsWith(".0")) state.textTwo.value = state.textTwo.value.replace(".0", "")
             }

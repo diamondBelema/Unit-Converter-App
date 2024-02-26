@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.outlined.Backspace
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -42,7 +43,7 @@ import com.dibe.unitconverterapp.Area.AreaVariables
 
 @Composable
 private fun NumberButton(number : String , onClick : (String) -> Unit) {
-    TextButton(onClick = { onClick(number) }) {
+    ElevatedButton(onClick = { onClick(number) }) {
         Text(text = number , fontSize = 40.sp)
     }
 }

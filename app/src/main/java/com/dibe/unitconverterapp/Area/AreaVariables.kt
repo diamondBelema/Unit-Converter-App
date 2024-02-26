@@ -31,17 +31,17 @@ object AreaVariables {
     )
 
     val conversionFactorsFromStandard: Map<String, Double> = mapOf(
-        "mi²" to  3.861E-07,
-        "ac" to 0.00024711,
-        "yd²" to 1.1959900463,
-        "dm²" to 0.01,
-        "m²" to 1.0,
-        "cm²" to 10000.0,
-        "mm²" to 1000000.0,
-        "ft²" to 10.7639104167,
-        "ha" to 0.0001,
-        "μm²" to 1000000000000.0,
-        "in²" to 1550.0,
-        "brn" to 1E+28
+        "mi²" to  1/2.59E6,
+        "ac" to 1/4046.85642,
+        "yd²" to 1/0.83612736,
+        "dm²" to 1/0.01,
+        "m²" to 1/1.0,
+        "cm²" to 1/0.0001,
+        "mm²" to 1/0.000001,
+        "ft²" to 1/0.09290304,
+        "ha" to 1/10000.0,
+        "μm²" to  1/1.0E-12,
+        "in²" to 1/0.00064516,
+        "brn" to 1/1E-28
     )
 }

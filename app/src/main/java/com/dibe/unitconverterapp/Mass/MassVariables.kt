@@ -34,8 +34,8 @@ object MassVariables {
         "dag" to 0.1,
         "hg" to 0.01,
         "kg" to 0.001,
-        "st" to 0.00015747,
-        "lb" to 0.00220462,
-        "oz" to 0.03527396
+        "st" to 1/6350.29318,
+        "lb" to 1/453.59237,
+        "oz" to 1/28.3495231
                                                           )
 }

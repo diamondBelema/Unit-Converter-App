@@ -23,13 +23,13 @@ object EnergyVariables {
     )
 
     val conversionFactorsFromKM: Map<String, Double> = mapOf(
-        "J" to 1.0 ,
-        "BTU" to 0.00094781707774915 ,
-        "erg" to 10000000.0 ,
-        "ft-ib" to 1.3558179483314003 ,
-        "cal" to 0.23900574 ,
-        "kwh" to 0.000000278 ,
-        "eV" to 6.2415E+18 ,
-        "L-atm" to 0.0098692326671601 ,
+        "J" to 1.0,
+        "BTU" to 1/1055.0,
+        "erg" to 1/1E-7,
+        "ft-ib" to 1/1.356,
+        "cal" to 1/4.186,
+        "kwh" to 1/3.6E6,
+        "eV" to 1/1.602E-19,
+        "L-atm" to 1/101.13,
     )
 }
