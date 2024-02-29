@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlin.math.*
 
-
 class CalculatorViewModel: ViewModel() {
     private val state = CalculatorState()
 
@@ -21,7 +20,7 @@ class CalculatorViewModel: ViewModel() {
     var logString = state.logString
 
     private val operations: List<Char> = listOf('+' , '÷' , '-' , '×', '√')
-    private val `sci-fi`: List<Char> = listOf('c' , 's' , 't' , 'L' , 'l' , 'e' , '√' , '!', 'p', 'u', 'v', 'w', 'r')
+    private val `sci-fi`: List<Char> = listOf('a', 'c' , 's' , 't' , 'L' , 'l' , 'e' , '√' , '!', 'p', 'u', 'v', 'w', 'x', 'y', 'r')
     private var calculations: MutableMap<String, Double> = mutableMapOf("+1" to 0.0)
     private var current = "+1"
     private var isOperation  = false
@@ -90,20 +89,30 @@ class CalculatorViewModel: ViewModel() {
             if (`sci-fi`.contains(sign[0])){
                 val rad = if (state.isDegree.value) num*(PI/180) else num
 
-                Log.i("myTag", "$num to radians is $rad")
                 when (sign[0]){
                     's' -> calc(sign[1], sin(rad))
                     'c' -> calc(sign[1] , cos(rad))
                     't' -> calc(sign[1] , tan(rad))
-                    'u' -> calc(sign[1], asin(rad))
-                    'v' -> calc(sign[1] , acos(rad))
-                    'w' -> calc(sign[1] , atan(rad))
+                    'u' -> calc(sign[1], asin(rad)*(180/PI))
+                    'v' -> calc(sign[1] , acos(rad)*(180/PI))
+                    'w' -> calc(sign[1] , atan(rad)*(180/PI))
+                    'x' -> calc(sign[1] , 10.0.pow(num))
+                    'y' -> calc(sign[1] , exp(num))
                     'L' -> calc(sign[1] , log10(num))
                     'l' -> calc(sign[1] , ln(num))
                     '√' -> calc(sign[1] , sqrt(num))
                     '!' -> calc(sign[1], num)
-                    'r' -> calc(sign[1], num)
+                    'a' -> calc(sign[1], num)
+                    'r' -> {
+                        val nums = calculations.keys.indexOf(sign) - 1
 
+                        val power = num.let { calculations[calculations.keys.toList()[nums]]?.pow(it) }
+                        Log.i("myTag", nums.toString())
+                        Log.i("myTag", power.toString())
+                        if (power != null) {
+                            calc(sign[1], (power/ calculations[calculations.keys.toList()[nums]] !!))
+                        }
+                    }
                 }
             }else{calc(sign[0], num)}
 
@@ -201,13 +210,16 @@ class CalculatorViewModel: ViewModel() {
         val signOfLast = calculations.keys.last()[0]
         val countOfLast = calculations.keys.last().slice(1..<calculations.keys.last().length)
         val latestCurrent = "$char$signOfLast$countOfLast"
-        if (char == "p") {
+        if (char == "a") {
+            calculations[current] = 1/ calculations[current] !!
+            state.ansText.value = calculate()
+        }else if (char == "p") {
             if (calculations[current] == 0.0) calculations[current] = 1.0
             calculations[current] = calculations[current] !! * PI
-        }else if (state.displayText.value.isEmpty()){
+        }else if (state.displayText.value == " "){
             current = "$char+1"
-            calculations[current] = 0.0
-        } else if (char == "!"){
+            calculations[current] = 0.0 }
+        else if (char == "!"){
             val num = calculations[current]
             var factorial: Long = 1
             if (num != null) {
@@ -218,6 +230,7 @@ class CalculatorViewModel: ViewModel() {
             calculations[current] = factorial.toDouble()
             state.ansText.value = calculate()
         }else if (operations.contains(state.displayText.value.last()) && ! `sci-fi`.contains(calculations.keys.last()[0]) && char != "!" && char != "p") {
+            Log.i("myTag", "logged in")
             if (calculations.isNotEmpty()) calculations.remove(current)
             when (char) {
                 "s" -> calculations[latestCurrent] = sin(valueOfLast)
@@ -227,6 +240,8 @@ class CalculatorViewModel: ViewModel() {
                 "u" -> calculations[latestCurrent] = asin(valueOfLast)
                 "v" -> calculations[latestCurrent] = acos(valueOfLast)
                 "w" -> calculations[latestCurrent] = atan(valueOfLast)
+                "x" -> calculations[latestCurrent] = acos(valueOfLast)
+                "y" -> calculations[latestCurrent] = atan(valueOfLast)
                 "r" -> calculations["$char${signOfLast}1$countOfLast"] = atan(valueOfLast)
                 "t" -> calculations[latestCurrent] = tan(valueOfLast)
                 "√" -> calculations[latestCurrent] = sqrt(valueOfLast)
@@ -246,10 +261,13 @@ class CalculatorViewModel: ViewModel() {
             "t" -> state.displayText.value = "${state.displayText.value}tan"
             "√" -> state.displayText.value = "${state.displayText.value}√"
             "!" -> state.displayText.value = "${state.displayText.value}!"
+            "x" -> state.displayText.value = "${state.displayText.value}10^"
+            "y" -> state.displayText.value = "${state.displayText.value}e^"
             "u" -> state.displayText.value = "${state.displayText.value}sin⁻¹"
             "v" -> state.displayText.value = "${state.displayText.value}cos⁻¹"
             "w" -> state.displayText.value = "${state.displayText.value}tan⁻¹"
             "r" -> state.displayText.value = "${state.displayText.value}^"
+            "a" -> state.displayText.value = "${state.displayText.value}⁻¹"
             "p" -> state.displayText.value = "${state.displayText.value}\uD835\uDED1"
         }
 
@@ -281,7 +299,7 @@ class CalculatorViewModel: ViewModel() {
     }
 
     fun clear() {
-        state.displayText.value = ""
+        state.displayText.value = " "
         state.ansText.value = ""
         calculations = mutableMapOf("+1" to 0.0)
         noOfSigns = mutableMapOf(
@@ -310,11 +328,71 @@ class CalculatorViewModel: ViewModel() {
 
     fun delete(){
         if (state.displayText.value.isNotEmpty()){
-            if (operations.contains(state.displayText.value.last().toChar())){
+            if (operations.contains(state.displayText.value.last())){
                 state.displayText.value = state.displayText.value.dropLast(1)
                 calculations.remove(current)
                 current = calculations.keys.last()
+            }else if (`sci-fi`.contains(calculations.keys.last()[1]) && calculations[current] == 0.0){
+                when (calculations.keys.last()[1]) {
+                    's' -> {
+                        state.displayText.value.dropLast(3)
+                    }
+
+                    'c' -> {
+                        state.displayText.value.dropLast(3)
+                    }
+
+                    't' -> {
+                        state.displayText.value.dropLast(3)
+                    }
+
+                    'u' -> {
+                        state.displayText.value.dropLast(3)
+                    }
+
+                    'v' -> {
+                        state.displayText.value.dropLast(3)
+                    }
+
+                    'w' -> {
+                        state.displayText.value.dropLast(5)
+                    }
+
+                    'x' -> {
+                        state.displayText.value.dropLast(5)
+                    }
+
+                    'y' -> {
+                        state.displayText.value.dropLast(5)
+                    }
+
+                    'L' -> {
+                        state.displayText.value.dropLast(3)
+                    }
+
+                    'l' -> {
+                        state.displayText.value.dropLast(2)
+                    }
+
+                    '√' -> {
+                        state.displayText.value.dropLast(1)
+                    }
+
+                    '!' -> {
+                        state.displayText.value.dropLast(1)
+                    }
+
+                    'a' -> {
+                        state.displayText.value.dropLast(1)
+                    }
+
+                    'r' -> {
+                        state.displayText.value.dropLast(1)
+                    }
+                }
+                    calculations.remove(calculations.keys.last())
             }else{
+
                 if (calculations[current].toString().endsWith(".0")) {
                     Log.i("myTag", "deleting .0")
                     if (calculations[current].toString().dropLast(3) == "") calculations[current] = 0.0

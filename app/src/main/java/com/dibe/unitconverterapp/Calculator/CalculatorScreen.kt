@@ -267,7 +267,8 @@ fun ColumnScope.ScientificScreen(viewModel : CalculatorViewModel) {
                     symbol = viewModel.lnString.value ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.`addSci-fi`("l") })
+                    calc = { if (viewModel.lnString.value == "ln") viewModel.`addSci-fi`("l")
+                    else viewModel.`addSci-fi`("y") })
                 CalcButton(
                     symbol = "(" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
@@ -300,7 +301,8 @@ fun ColumnScope.ScientificScreen(viewModel : CalculatorViewModel) {
                     symbol = viewModel.logString.value ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
                     textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.`addSci-fi`("L") })
+                    calc = { if (viewModel.logString.value == "log") viewModel.`addSci-fi`("L")
+                    else viewModel.`addSci-fi`("x") })
                 CalcButton(
                     symbol = ")" ,
                     color = MaterialTheme.colorScheme.tertiaryContainer ,
@@ -381,7 +383,7 @@ fun ColumnScope.ScientificScreen(viewModel : CalculatorViewModel) {
                     symbol = "x⁻¹" ,
                     color = MaterialTheme.colorScheme.secondaryContainer ,
                     textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("x⁻¹") })
+                    calc = { viewModel.`addSci-fi`("a") })
 
                 CalcButton(
                     symbol = "=" ,

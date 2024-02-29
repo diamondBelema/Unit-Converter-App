@@ -1,6 +1,8 @@
 package com.dibe.unitconverterapp
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -26,42 +28,49 @@ import com.dibe.unitconverterapp.Volume.VolumeViewModel
 @Composable
 fun Nav(){
     val navController = rememberNavController()
-
+    val lengthViewModel = viewModel<LengthViewModel>()
+    val areaViewModel = viewModel<AreaViewModel>()
+    val volumeViewModel = viewModel<VolumeViewModel>()
+    val calculatorViewModel = viewModel<CalculatorViewModel>()
+    val massViewModel = viewModel<MassViewModel>()
+    val energyViewModel = viewModel<EnergyViewModel>()
+    val powerViewModel = viewModel<PowerViewModel>()
+    val timeViewModel = viewModel<TimeViewModel>()
     NavHost(navController =  navController, startDestination = "HomeScreen"){
         composable(route = "HomeScreen"){
             HomeScreen(navController)
         }
 
         composable(route = "LengthScreen"){
-            LengthScreen(LengthViewModel() , navController)
+            LengthScreen(lengthViewModel , navController)
         }
 
         composable(route = "AreaScreen"){
-            AreaScreen(AreaViewModel() , navController)
+            AreaScreen(areaViewModel , navController)
         }
 
         composable(route = "VolumeScreen"){
-            VolumeScreen(VolumeViewModel() , navController)
+            VolumeScreen(volumeViewModel , navController)
         }
 
         composable(route = "CalculatorScreen"){
-            CalculatorScreen(CalculatorViewModel(), navController)
+            CalculatorScreen(calculatorViewModel, navController)
         }
 
         composable(route = "MassScreen"){
-            MassScreen(MassViewModel(), navController)
+            MassScreen(massViewModel, navController)
         }
 
         composable(route = "EnergyScreen"){
-            EnergyScreen(EnergyViewModel() , navController)
+            EnergyScreen(energyViewModel, navController)
         }
 
         composable(route = "PowerScreen"){
-            PowerScreen(PowerViewModel() , navController)
+            PowerScreen(powerViewModel , navController)
         }
 
         composable(route = "TimeScreen"){
-            TimeScreen(TimeViewModel() , navController)
+            TimeScreen(timeViewModel , navController)
         }
     }
 }
