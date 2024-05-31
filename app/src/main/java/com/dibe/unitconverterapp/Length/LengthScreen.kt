@@ -14,8 +14,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.automirrored.outlined.Backspace
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,7 +67,7 @@ fun LengthScreen(viewModel : LengthViewModel , navController : NavHostController
                     title = { Text(text = "Length" , fontSize = 20.sp) } ,
                     navigationIcon = {
                         IconButton(onClick = { navController.navigate("HomeScreen") }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBackIos , contentDescription = null)
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack , contentDescription = null)
                         }
                     }
                          )
@@ -202,7 +202,7 @@ fun LengthScreen(viewModel : LengthViewModel , navController : NavHostController
                                 .height(170.dp)
                                 .width(85.dp)
                                          ) {
-                            Icon(Icons.AutoMirrored.Outlined.Backspace , contentDescription = "DEL")
+                            Icon(Icons.AutoMirrored.Filled.Backspace , contentDescription = "DEL")
                         }
                     }
                 }

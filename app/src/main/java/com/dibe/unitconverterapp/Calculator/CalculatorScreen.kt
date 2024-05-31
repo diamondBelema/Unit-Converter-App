@@ -1,404 +1,55 @@
-package com.dibe.learningcomposeapp
+package com.dibe.unitconverterapp.Calculator
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.automirrored.filled.Backspace
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Backspace
-import androidx.compose.material.icons.filled.Science
+import androidx.compose.material.icons.filled.SwitchRight
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.dibe.unitconverterapp.Calculator.CalculatorViewModel
-
-@Composable
-fun ColumnScope.CalcButton(
-        symbol : String ,
-        color : Color ,
-        textColor : Color = Color(0xFF000000) ,
-        weight : Float = 1f,
-        calc : () -> Unit ,
-        fontSize : TextUnit = 20.sp
-                          ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .weight(weight)
-            .clickable { calc() }
-            .padding(10.dp)
-            .clip(RoundedCornerShape(100.dp))
-            .background(color = color)
-            .padding(10.dp) ,
-        contentAlignment = Alignment.Center
-       ) {
-        Text(text = symbol , color = textColor , fontSize = fontSize)
-    }
-}
-
-@Composable
-fun ColumnScope.OutlinedCalcButton(
-        symbol : String ,
-        calc : (String) -> Unit ,
-        fontSize : TextUnit = 30.sp
-                                  ) {
-    ElevatedButton(onClick = { calc(symbol) },
-                   modifier = Modifier
-                       .weight(1f)
-                       .padding(8.dp)
-                       .fillMaxSize()
-                  ) {
-        Text(text = symbol , fontSize = fontSize)
-    }
-}
-
-@Composable
-fun ReviewText(
-        text : String ,
-        fontSize : TextUnit
-              ) {
-    Text(
-        text = text ,
-        fontSize = fontSize ,
-        color = MaterialTheme.colorScheme.onTertiaryContainer ,
-        fontWeight = FontWeight.Light ,
-        modifier = Modifier
-            .fillMaxWidth()
-        )
-}
-
-
-@Composable
-fun ColumnScope.NormalScreen(viewModel : CalculatorViewModel) {
-    Surface(
-        modifier = Modifier
-            .weight(0.7f) ,
-           ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly ,
-            modifier = Modifier
-                .fillMaxSize()
-           ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                CalcButton(
-                    symbol = "c" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.clear() })
-                OutlinedCalcButton(
-                    symbol = "7" ,
-                    calc = { viewModel.updateDisplayText("7") })
-                OutlinedCalcButton(
-                    symbol = "4" ,
-                    calc = { viewModel.updateDisplayText("4") })
-                OutlinedCalcButton(
-                    symbol = "1" ,
-                    calc = { viewModel.updateDisplayText("1") })
-                CalcButton(
-                    symbol = "%" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.addOperator("%") })
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                CalcButton(
-                    symbol = "÷" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("÷") })
-                OutlinedCalcButton(
-                    symbol = "8" ,
-                    calc = { viewModel.updateDisplayText("8") })
-                OutlinedCalcButton(
-                    symbol = "5" ,
-                    calc = { viewModel.updateDisplayText("5") })
-                OutlinedCalcButton(
-                    symbol = "2" ,
-                    calc = { viewModel.updateDisplayText("2") })
-                OutlinedCalcButton(
-                    symbol = "0" ,
-                    calc = { viewModel.updateDisplayText("0") })
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                CalcButton(
-                    symbol = "×" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("×") })
-                OutlinedCalcButton(
-                    symbol = "9" ,
-                    calc = { viewModel.updateDisplayText("9") })
-                OutlinedCalcButton(
-                    symbol = "6" ,
-                    calc = { viewModel.updateDisplayText("6") })
-                OutlinedCalcButton(
-                    symbol = "3" ,
-                    calc = { viewModel.updateDisplayText("3") })
-                OutlinedCalcButton(
-                    symbol = "." ,
-                    calc = { viewModel.putPoint() })
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                Box(
-                    modifier = Modifier
-                        .width(160.dp)
-                        .height(80.dp)
-                        .weight(1f)
-                        .clickable { viewModel.delete() }
-                        .padding(10.dp)
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(100.dp))
-                        .background(color = MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(10.dp) ,
-                    contentAlignment = Alignment.Center
-                   ) {
-                    Icon(
-                        Icons.AutoMirrored.Default.Backspace,
-                        contentDescription = "DEL" ,
-                        tint = MaterialTheme.colorScheme.secondary
-                        )
-                }
-                CalcButton(
-                    symbol = "-" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("-") })
-                CalcButton(
-                    symbol = "+" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.addOperator("+") })
-                CalcButton(
-                    symbol = "=" ,
-                    color = MaterialTheme.colorScheme.primaryContainer ,
-                    textColor = MaterialTheme.colorScheme.primary ,
-                    weight = 2f ,
-                    calc = { viewModel.displayAns() })
-            }
-        }
-    }
-}
-
-@Composable
-fun ColumnScope.ScientificScreen(viewModel : CalculatorViewModel) {
-    Surface(
-        modifier = Modifier
-            .weight(0.7f) ,
-           ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly ,
-            modifier = Modifier
-                .fillMaxSize()
-           ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                CalcButton(
-                    symbol = "c" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.clear() })
-                CalcButton(
-                    symbol = viewModel.sinString.value ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { if (viewModel.sinString.value == "sin") viewModel.`addSci-fi`("s")
-                        else viewModel.`addSci-fi`("u")
-                    })
-                CalcButton(
-                    symbol = viewModel.lnString.value ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { if (viewModel.lnString.value == "ln") viewModel.`addSci-fi`("l")
-                    else viewModel.`addSci-fi`("y") })
-                CalcButton(
-                    symbol = "(" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.addOperator("%") })
-                CalcButton(
-                    symbol = "\uD835\uDED1" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.`addSci-fi`("p") })
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                CalcButton(
-                    symbol = viewModel.angleString.value ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.changeAngle() })
-                CalcButton(
-                    symbol = viewModel.cosString.value ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { if (viewModel.cosString.value == "cos") viewModel.`addSci-fi`("c")
-                    else viewModel.`addSci-fi`("v") })
-                CalcButton(
-                    symbol = viewModel.logString.value ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { if (viewModel.logString.value == "log") viewModel.`addSci-fi`("L")
-                    else viewModel.`addSci-fi`("x") })
-                CalcButton(
-                    symbol = ")" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.addOperator("%") })
-                CalcButton(
-                    symbol = "e" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.addOperator("2") })
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                CalcButton(
-                    symbol = "inv" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.inv() })
-                CalcButton(
-                    symbol = viewModel.tanString.value,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { if (viewModel.tanString.value == "tan") viewModel.`addSci-fi`("t")
-                    else viewModel.`addSci-fi`("w") })
-                CalcButton(
-                    symbol = "√" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.`addSci-fi`("√") })
-                CalcButton(
-                    symbol = "xʸ" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.`addSci-fi`("r") })
-                CalcButton(
-                    symbol = "x!" ,
-                    color = MaterialTheme.colorScheme.tertiaryContainer ,
-                    textColor = MaterialTheme.colorScheme.tertiary ,
-                    calc = { viewModel.`addSci-fi`("!") })
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) ,
-                verticalArrangement = Arrangement.SpaceEvenly ,
-                  ) {
-                Box(
-                    modifier = Modifier
-                        .width(160.dp)
-                        .height(80.dp)
-                        .weight(1f)
-                        .clickable { viewModel.delete() }
-                        .padding(10.dp)
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(100.dp))
-                        .background(color = MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(10.dp) ,
-                    contentAlignment = Alignment.Center
-                   ) {
-                    Icon(
-                        Icons.AutoMirrored.Default.Backspace ,
-                        contentDescription = "DEL" ,
-                        tint = MaterialTheme.colorScheme.secondary
-                        )
-                }
-                CalcButton(
-                    symbol = viewModel.angleString.value ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.changeAngle() })
-                CalcButton(
-                    symbol = "x⁻¹" ,
-                    color = MaterialTheme.colorScheme.secondaryContainer ,
-                    textColor = MaterialTheme.colorScheme.secondary ,
-                    calc = { viewModel.`addSci-fi`("a") })
-
-                CalcButton(
-                    symbol = "=" ,
-                    color = MaterialTheme.colorScheme.primaryContainer ,
-                    textColor = MaterialTheme.colorScheme.primary ,
-                    weight = 2f ,
-                    calc = { viewModel.displayAns() })
-            }
-        }
-    }
-}
+import com.dibe.unitconverterapp.Calculator.CalculatorEvent
+import com.dibe.unitconverterapp.Calculator.CalculatorState
+import kotlin.math.sign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalculatorScreen(viewModel : CalculatorViewModel , navController : NavController) {
+fun CalculatorScreen(
+        state: CalculatorState,
+        onEvent: (CalculatorEvent) -> Unit,
+        navController : NavController
+                    ) {
     Surface {
         Scaffold(
             topBar = {
@@ -407,92 +58,323 @@ fun CalculatorScreen(viewModel : CalculatorViewModel , navController : NavContro
                     navigationIcon = {
                         IconButton(onClick = { navController.navigate("HomeScreen") }) {
                             Icon(
-                                Icons.AutoMirrored.Filled.ArrowBackIos ,
+                                Icons.AutoMirrored.Filled.ArrowBack ,
                                 contentDescription = null
                                 )
                         }
-                    },
+                    } ,
                          )
             }) { paddingValues ->
             Column(
+                horizontalAlignment = Alignment.End ,
+                verticalArrangement = Arrangement.Bottom ,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues) ,
-                horizontalAlignment = Alignment.CenterHorizontally ,
-                verticalArrangement = Arrangement.Bottom
+                    .padding(paddingValues)
                   ) {
-                Surface(
+                Column(
                     modifier = Modifier
-                        .weight(0.4f) ,
-                       ) {
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(10.dp)
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(30.dp))
-                            .background(color = MaterialTheme.colorScheme.tertiaryContainer)
-                        ) {
-                        Column(
-                            verticalArrangement = Arrangement.Bottom ,
-                            horizontalAlignment = Alignment.End ,
-                            modifier = Modifier
-                                .padding(20.dp)
-                                .weight(2f)
-                                .fillMaxWidth()
-                              ) {
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier
-                                    .horizontalScroll(rememberScrollState())
-                               ){
-                                ReviewText(
-                                text = viewModel.displayText.value ,
-                                fontSize = viewModel.displayTextFontSize.intValue.sp
-                                            )
-                            }
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier
-                                    .horizontalScroll(rememberScrollState())
-                               ) {
-                                ReviewText(
-                                    text = viewModel.ansText.value ,
-                                    fontSize = viewModel.ansTextFontSize.intValue.sp
-                                          )
-                            }
-                        }
-                    }
-                }
-                Column (
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .weight(0.05f)
+                        .weight(0.4f)
                         .fillMaxSize()
-                       ){
-                    IconButton(onClick = { viewModel.changeScreen() }) {
-                        Icon(
-                            imageVector = Icons.Filled.Science,
-                            contentDescription = "Localized description"
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(30.dp))
+                        .background(color = MaterialTheme.colorScheme.primaryContainer)
+                      ) {
+                    Column(
+                        verticalArrangement = Arrangement.Bottom ,
+                        horizontalAlignment = Alignment.End ,
+                        modifier = Modifier
+                            .padding(9.dp)
+                            .weight(0.5f)
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                          ) {
+                        TextField(
+                            value = state.input ,
+                            onValueChange = {} ,
+                            readOnly = true ,
+                            modifier = Modifier
+                                .fillMaxWidth() ,
+                            textStyle = LocalTextStyle.current.copy(
+                                fontSize = 20.sp ,
+                                textAlign = TextAlign.Right ,
+                                                                   ) ,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent ,
+                                unfocusedContainerColor = Color.Transparent ,
+                                cursorColor = Color.Transparent ,
+                                focusedIndicatorColor = Color.Transparent ,
+                                unfocusedIndicatorColor = Color.Transparent
+                                                             )
+                                 )
+
+                    }
+                    Column(
+                        verticalArrangement = Arrangement.Bottom ,
+                        horizontalAlignment = Alignment.End ,
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .weight(0.4f)
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                          ) {
+                        Text(
+                            text = state.result ,
+                            fontSize = 32.sp ,
+                            modifier = Modifier.align(Alignment.End) ,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
                             )
                     }
                 }
-                if (viewModel.isNormalCalculator.value) {
-                    NormalScreen(viewModel = viewModel)
-                } else {
-                    ScientificScreen(viewModel = viewModel)
+                Card(
+                    shape = RoundedCornerShape(20.dp) ,
+                    modifier = Modifier
+                        .weight(0.7f)
+                        .fillMaxSize()
+                        .background(
+                            color = MaterialTheme.colorScheme.secondaryContainer ,
+
+                            )
+                        .border(
+                            width = 1.dp ,
+                            color = MaterialTheme.colorScheme.primary ,
+                               ) ,
+                    colors = CardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer ,
+                        contentColor = MaterialTheme.colorScheme.secondaryContainer ,
+                        disabledContentColor = MaterialTheme.colorScheme.secondaryContainer ,
+                        disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                                       )
+                    ) {
+                    if (state.isNormalMode) {
+                        NormalButtonColumn(state = state , onEvent = onEvent)
+                    } else {
+                        SciButtonColumn(state = state , onEvent = onEvent)
+                    }
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun CalculatorPreview() {
-    val navController = rememberNavController()
-    CalculatorScreen(viewModel = CalculatorViewModel() , navController = navController)
+fun SciButtonColumn(
+        state: CalculatorState,
+        onEvent: (CalculatorEvent) -> Unit
+                      ){
+    Column (
+        verticalArrangement = Arrangement.SpaceEvenly ,
+        horizontalAlignment = Alignment.CenterHorizontally , modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
+           ){
+        CalculatorButtonRow(
+            rowItems = listOf("Sci" , "Clear", "Delete", "/") ,
+            onEvent = onEvent
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("inv", "log" , "ln" , "*") ,
+            onEvent = onEvent
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("sin" , "cos" , "tan", "-") ,
+            onEvent = onEvent
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("pi", "sqrt", "e" , "+") ,
+            onEvent = onEvent
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("xʸ" , "x!" , "( )" , "=") ,
+            onEvent = onEvent,
+            state = state
+                           )
+    }
 }
+
+@Composable
+fun NormalButtonColumn(
+        state: CalculatorState,
+        onEvent: (CalculatorEvent) -> Unit
+                      ){
+    Column (
+        verticalArrangement = Arrangement.SpaceEvenly ,
+        horizontalAlignment = Alignment.CenterHorizontally ,
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
+           ){
+        CalculatorButtonRow(
+            rowItems = listOf("Sci" , "Clear", "Delete", "/") ,
+            onEvent = onEvent,
+            state = state
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("1" , "2" , "3" , "*") ,
+            onEvent = onEvent
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("4" , "5" , "6" , "-") ,
+            onEvent = onEvent
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("7" , "8" , "9" , "+") ,
+            onEvent = onEvent
+                           )
+        CalculatorButtonRow(
+            rowItems = listOf("." , "0" , "%" , "=") ,
+            onEvent = onEvent,
+            state = state
+                           )
+    }
+}
+
+@Composable
+fun RowScope.NumberButton(number: String, onClick: (String) -> Unit) {
+    Button(
+        onClick = { onClick(number) },
+        modifier = Modifier
+            .weight(1f)
+            .padding(4.dp),
+        shape = CircleShape ,
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        contentPadding = PaddingValues(12.dp)
+          ) {
+        Text(number, fontSize = 24.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
+    }
+}
+
+@Composable
+fun RowScope.SignButton(sign: String, onClick: (String) -> Unit) {
+    Button(
+        onClick = { onClick(sign) },
+        modifier = Modifier
+            .weight(1f)
+            .padding(4.dp) ,
+        shape = CircleShape ,
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        contentPadding = PaddingValues(12.dp)
+          ) {
+        Text(sign, fontSize = 24.sp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+    }
+}
+
+@Composable
+fun RowScope.EqualToButton(onClick: () -> Unit) {
+    Button(
+        onClick = { onClick() } ,
+        modifier = Modifier
+            .weight(1f)
+            .padding(4.dp) ,
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        shape =  CircleShape ,
+        contentPadding = PaddingValues(12.dp)
+          ) {
+        Text("=", fontSize = 24.sp, color = MaterialTheme.colorScheme.onTertiaryContainer)
+    }
+}
+
+@Composable
+fun RowScope.ClearButton(onClick: () -> Unit) {
+    Button(
+        onClick = { onClick() },
+        modifier = Modifier
+            .weight(1f)
+            .padding(4.dp),
+        shape = CircleShape,
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        contentPadding = PaddingValues(12.dp)
+          ) {
+        Text("C", fontSize = 24.sp, color = MaterialTheme.colorScheme.onTertiaryContainer)
+    }
+}
+
+@Composable
+fun RowScope.DeleteButton(onClick: () -> Unit) {
+    IconButton(
+        onClick = { onClick() } ,
+        modifier = Modifier
+            .weight(1f)
+            .padding(4.dp)
+            .background(color = MaterialTheme.colorScheme.secondaryContainer , shape = CircleShape) ,
+          ) {
+        Icon(Icons.AutoMirrored.Outlined.Backspace , contentDescription ="Del", tint = MaterialTheme.colorScheme.onTertiaryContainer)
+    }
+}
+
+@Composable
+fun RowScope.SciButtons(sign : String, onClick: (String) -> Unit) {
+    Button(
+        onClick = { onClick(sign) },
+        modifier = Modifier
+            .weight(1f)
+            .padding(4.dp) ,
+        shape = CircleShape ,
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        contentPadding = PaddingValues(12.dp)
+          ) {
+        Text(sign, fontSize = 24.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
+    }
+}
+
+@Composable
+fun RowScope.SciButton(onClick: () -> Unit) {
+    IconButton(
+        onClick = { onClick() } ,
+        modifier = Modifier
+            .weight(1f)
+            .padding(4.dp)
+            .background(
+                color = MaterialTheme.colorScheme.tertiaryContainer ,
+                shape = CircleShape
+                       ) ,
+        ) {
+        Icon(Icons.Default.SwitchRight , contentDescription = "switch left", tint = MaterialTheme.colorScheme.onTertiaryContainer)
+    }
+}
+
+@Composable
+fun CalculatorButtonRow(
+        rowItems: List<String>,
+        onEvent: (CalculatorEvent) -> Unit,
+        state : CalculatorState = CalculatorState()
+                       ) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        for (buttonText in rowItems) {
+            when (buttonText) {
+                "=" -> EqualToButton(onClick = { onEvent(CalculatorEvent.Calculate) })
+                "Clear" -> ClearButton(onClick = { onEvent(CalculatorEvent.Clear) })
+                "Delete" -> DeleteButton(onClick = { onEvent(CalculatorEvent.Delete) })
+                "Sci" -> SciButton(onClick = { onEvent(CalculatorEvent.Navigate) })
+                "inv" -> SciButtons(sign = "inv", onClick = { onEvent(CalculatorEvent.Inverse) })
+                "e" -> SciButtons(sign = "e", onClick = { onEvent(CalculatorEvent.Number("e")) })
+                "pi" -> SciButtons(sign = "\uD835\uDED1", onClick = { onEvent(CalculatorEvent.Number("pi")) })
+                "xʸ" -> SciButtons(sign = "xʸ", onClick = { onEvent(CalculatorEvent.Number("^")) })
+                "x!" -> SciButtons(sign = "x!", onClick = { onEvent(CalculatorEvent.Special("!")) })
+                "( )" -> {
+                    NumberButton(
+                        number = buttonText ,
+                        onClick = {
+                            onEvent(CalculatorEvent.Bracket)
+                        }
+                                )
+                }
+                in listOf("sin", "cos", "tan", "ln", "log", "sqrt") -> {
+                    SciButtons(
+                        sign = if (buttonText != "sqrt") buttonText else "√",
+                        onClick = {
+                            onEvent(CalculatorEvent.Special(buttonText))
+                            state.bracketOpen = true
+                        }
+                              )
+
+                }
+                in listOf("+", "-", "*", "/", "%") -> SignButton(sign = if (buttonText != "*" && buttonText != "/") buttonText else if (buttonText == "/") "÷" else "×", onClick = { onEvent(CalculatorEvent.Operation(if (buttonText == "%") "00" else buttonText)) })
+                else -> NumberButton(number = buttonText, onClick = { onEvent(CalculatorEvent.Number(buttonText)) })
+            }
+        }
+    }
+}
+
+
 

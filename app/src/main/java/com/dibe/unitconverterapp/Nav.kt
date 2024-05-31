@@ -1,14 +1,14 @@
 package com.dibe.unitconverterapp
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dibe.learningcomposeapp.CalculatorScreen
 import com.dibe.unitconverterapp.Area.AreaScreen
 import com.dibe.unitconverterapp.Area.AreaViewModel
+import com.dibe.unitconverterapp.Calculator.CalculatorScreen
 import com.dibe.unitconverterapp.Calculator.CalculatorViewModel
 import com.dibe.unitconverterapp.Energy.EnergyScreen
 import com.dibe.unitconverterapp.Energy.EnergyViewModel
@@ -23,7 +23,6 @@ import com.dibe.unitconverterapp.Time.TimeScreen
 import com.dibe.unitconverterapp.Time.TimeViewModel
 import com.dibe.unitconverterapp.Volume.VolumeScreen
 import com.dibe.unitconverterapp.Volume.VolumeViewModel
-
 
 @Composable
 fun Nav(){
@@ -54,7 +53,7 @@ fun Nav(){
         }
 
         composable(route = "CalculatorScreen"){
-            CalculatorScreen(calculatorViewModel, navController)
+            CalculatorScreen(calculatorViewModel.state.collectAsState().value, calculatorViewModel::onEvent, navController)
         }
 
         composable(route = "MassScreen"){
